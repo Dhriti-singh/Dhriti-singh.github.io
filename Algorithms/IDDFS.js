@@ -1,38 +1,9 @@
-// each probelm needs to have
-// - initial state
-// -actions
-// -transition state
-// -goal state
-// -path cost function
-
-// node
-// -a state
-// -a parent
-// -an actions
-// -path cost
-
-// -frontier
-
-// -expanded nodes
-
-// -Start with the frontier, which only contains the initial node 
-// -Start with an empty explored set
-// -Repeat 
-// --If the frontier is empty then there is no solution 
-// --Remove a node from the frontier 
-// --If node contains the goal state then return the solution 
-// --Add the node to the explored set
-// --Expand the node, add the resulting node to the frontier 
-//  - --if they aren't already in the frontier or in the explored state
-
-//the frontier stores the nodes to be expanded;
-
 function call_IDDFS(){
-	let bottomReached = false;
 	updateCanvas();
-	console.log("called IDDFS");
-
+	
+	//storing information of nodes
 	let nodes = [[]];
+
 	function Node(i,j){
 		this.i = i;
 		this.j = j;
@@ -40,13 +11,15 @@ function call_IDDFS(){
 		this.parentY = j;
 		this.walk = board[i][j];
 		this.visted = 0;
-		this.closed = 0;
+        this.closed = 0;
+        this.depth = 0;
 	}
 	
-	let shortestPath = [];
+	//initial and final state
 	let start = new Node(initialState.i , initialState.j);
 	let end = new Node(goalState.i , goalState.j);
 
+	// to check if the goal node is achieved
 	function check(currNode){
 		if(currNode.i == goalState.i && currNode.j== goalState.j){
 			return true;
@@ -55,11 +28,19 @@ function call_IDDFS(){
 			return false;
 		}
 	}
+
+	//a variable to check if the algorithm is  completed
 	let DLSfinished = false;
-	//let visitedNodes = [];
+
+	//keeps a count of the nodes explored in previous iteration
+	let exploredPrev = -1;
+
+	//keeps a count of the nodes explored in current iteration
+	let explored = 0;
+
 	function iterativeDeepingDFS(){
 		let depth = 1;
-		for(;depth<=(rows*cols*10);){
+		for(;depth<=(rows*cols*3);){
 
 			for(let i=0 ; i<rows; i++){
 				nodes[i] = [];
@@ -68,14 +49,20 @@ function call_IDDFS(){
 				}
 			}
 			DLSfinished = false;
-			//visitedNodes = [];
+			nodes[start.i][start.j].visited = 1; 
+			// so that start node is not considered as child of its childs.
+            
+            explored = 0;
 
 			let result = depthLimitedSearch(nodes[start.i][start.j],0, depth);
+
 			if(result==true){
-				console.log("node found");
+				let shortestPath = [];
+
+				console.log("node found at depth",depth);
 				let currX = goalState.i;
 				let currY = goalState.j;
-				console.log(currX ,currY);
+				//backtracking to find the optimal path
 				while(1){
 					if(currX==initialState.i && currY==initialState.j){
 						break;
@@ -90,51 +77,87 @@ function call_IDDFS(){
 						shortestPath.push(curr);
 					}
 				}
-				//drawArrayBlue(visitedNodes);
 				drawArrayYellow(shortestPath);
 				singleCellDraw(initialState.i, initialState.j,"green");
 				singleCellDraw(goalState.i,goalState.j,"red");
 				return;
 			}
 			else{
+				//increasing the depth of the search
 				depth += 1;
-				console.log("increasing depth to",depth);
 			}
 			if(DLSfinished){
 				return;
 			}
-		}
-		console.log("node is unreachable");
+			//if the umber of nodes explored in current iteration is same as the previous iteration
+			//then the node is unreachable
+			if(exploredPrev == explored){
+				console.log("node is unreachable");
+				break;
+			}
+			//update previous explored nodes value
+			else{
+				exploredPrev = explored ;
+			}
+		} 
 		return;
 	}
 	function depthLimitedSearch(node  ,currDepth , maxDepth){
+
+		//if the node is found already
 		if(DLSfinished)
 			return true;
 
-		//console.log(currDepth, maxDepth, node);
-		//node.closed = 1;
-		//visitedNodes.push(node);
-
+		//if the current node is the goal state
 		if(check(node)){
 			DLSfinished = true;
 			return true;
 		}
-		let neighbours = Neighbours(node , nodes);
-		//console.log(neighbours);
-
+		
+		//can not get into more depth
 		if(currDepth == maxDepth){
 			return false;
 		}
-		
+
+		//expanding the current node
+		let neighbours = Neighbours(node , nodes);
+		let neighbours2= [];
+
 		for(let i=0;i<neighbours.length;i++){
 			let neighbour = neighbours[i];
-			if(neighbour.closed==1)
-			 	continue;
-			neighbour.closed = 1;
+
+			//if the node is explored
+			if(neighbour.closed==1 || neighbour.visted ==1){
+				//the neighbour has a less deep path than the previous
+				if(neighbour.depth > currDepth + 1){
+					neighbour.depth = currDepth + 1;
+					neighbours2.push(neighbour); 
+				}
+				else{
+					continue;
+				}
+			}
+			//the neighbour is not explored yet
+			else{
+				neighbour.depth = currDepth + 1;
+				neighbours2.push(neighbour);
+				neighbour.visted = 1;
+			}
+		}
+
+		for(let i=0;i<neighbours2.length;i++){
+			let neighbour = neighbours2[i];
+
+			//increasing the number of explored nods
+			explored += 1;
+		
 			neighbour.parentX = node.i;
 			neighbour.parentY = node.j;
-			neighbour.closed = 1;
-			let result = depthLimitedSearch(neighbour , node, currDepth+1, maxDepth);
+            neighbour.closed = 1;
+
+            let result = depthLimitedSearch(neighbour , currDepth+1, maxDepth);
+			
+			//if goal node is found
 			if(result==true){
 				return true;
 			}

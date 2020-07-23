@@ -1,0 +1,160 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>PATH FINDING VISUALIZER</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
+    <script src="https://unpkg.com/konva@7.0.2/konva.min.js"></script>
+   
+    <link rel= "stylesheet" type= "text/css" href= "CSS/style.css" >
+    <script type="text/javascript" src="getValue.js">                 </script>
+
+</head>
+<body>
+  <h1>PATH FINDING VISUALIZER</h1>
+
+  <div id="nav-bar">
+    <span class="dropdown_algorithm">
+      <button class="dropdown_button">ALGORITHMS</button>
+      <div class="dropdown_algorithm_content">
+        <div id="dropdown_algorithms">
+          <input type="radio" name="algo" value="dfs" id="dfs" >
+          <label for="dfs">DFS</label>
+          <br>
+          <input type="radio" name="algo" value="bfs"  id="bfs">
+          <label for="bfs">BFS</label>
+          <br>
+          <input type="radio" name="algo" value="bestfs"  id="bestfs">
+          <label for="bestfs">Best First Finder</label>
+          <br>
+          <input type="radio" name="algo" value="dijkstra"  id="dijkstra">
+          <label for="dijkstra">Dijkstra</label>
+          <br>
+          <input type="radio" name="algo" value="Astar" id="Astar">
+          <label for="Astar">Astar</label>
+          <br>
+          <input type="radio" name="algo" value="IDDFS" id="IDDFS">
+          <label for="IDDFS">IDDFS</label>
+          <br>
+          <input type="radio" name="algo" value="IDAstar" id="IDAstar">
+          <label for="IDAstar">IDAstar</label>
+        </div>
+      </div>
+    </span>
+
+    <span class="dropdown_heuristic">
+      <button class="dropdown_button">HEURISTIC</button>
+      <div class="dropdown_heuristic_content">
+        <div id="dropdown_heuristic">
+          <input type="radio" name="heuristic" id="manhattan" >
+          <label for="manhattan">Manhattan</label>
+          <br>
+          <input type="radio" name="heuristic"  id="euclidean">
+          <label for="euclidean">Euclidean</label>
+          <br>
+        </div>
+      </div>
+    </span>
+
+    <span class="dropdown_maze">
+      <button class="dropdown_button">MAZE PATTERN</button>
+      <div class="dropdown_maze_content">
+        <button type = "button" onclick = "recursiveWall()">
+          Recursive Wall 
+        </button>
+
+        <button type = "button" onclick = "randomWallSparse()">
+          Random Wall Sparse
+        </button>
+
+         <button type = "button" onclick = "randomWallDense()">
+          Random Wall Dense
+        </button>
+
+        <button type = "button" onclick = "randomWeightSparse()">
+          Random Weight Sparse
+        </button>
+
+        <button type = "button" onclick = "randomWeightDense()">
+          Random Weight Dense
+        </button>
+      </div>
+    </span>
+    
+    <span class="dropdown_block">
+      <button class="dropdown_button">CREATE BLOCK</button>
+      <div class="dropdown_block_content">
+        <div id="dropdown_block">
+          <input type="radio"  name="block" value=1 id="wall">
+          <label for = "wall"  >Wall       </label>
+          <br>
+          <input type="radio"  name="block" value=2 id="weight-10">
+          <label for = "weight">Weight-10  </label>
+          <br>
+          <input type="radio"  name="block" value=2 id="weight-20">
+          <label for = "weight">Weight-20  </label>
+          <br>
+          <input type="radio"  name="block" value=2 id="weight-50">
+          <label for = "weight">Weight-50  </label>
+        </div>
+      </div>
+    </span>
+</div>
+
+  <div id = "nav-bar2">
+    <br><br>
+    <button type = "button" onclick = "onStart()" id="startButton">
+      START
+    </button>
+
+    <span id = "diagonal">
+      <input type="checkbox"  name="Diagonal Movement" value=1 id="dia_check">
+      <label for = "diagonal"  >DIAGONAL MOVEMENT</label id = "dia_label">
+    </span>
+
+    <button type = "button" onclick = "cleanBoard()" id="clean">
+          CLEAN BOARD
+    </button>
+
+    <button type = "button" onclick = "cleanResult()" id = "clean">
+          CLEAN PATH
+    </button>
+
+    
+  </div>
+
+
+    
+
+  <br><br>
+
+  <div id="container"></div>
+  <canvas id="canvas_trigger" width="1250px" height="500px"></canvas>
+
+  <script type="text/javascript" src="heapFunction.js">               </script>
+  <script type="text/javascript" src="Grid/DrawCells.js">             </script>
+  <script type="text/javascript" src="Node.js">                       </script>
+  <script type="text/javascript" src="Grid/board.js">                 </script>
+  <script type="text/javascript" src="Grid/drawStart.js">             </script>
+  <script type="text/javascript" src="Grid/drawEnd.js">               </script> 
+  <script type="text/javascript" src="Algorithms/DFS.js">             </script>
+  <script type="text/javascript" src="Algorithms/BestFirstFinder.js"> </script>
+  <script type="text/javascript" src="Algorithms/BFS.js">             </script>
+  <script type="text/javascript" src="Algorithms/Astar.js">           </script>
+  <script type="text/javascript" src="Algorithms/dijkstra.js">        </script>
+  <script type="text/javascript" src="Algorithms/IDDFS.js">           </script>
+  <script type="text/javascript" src="Algorithms/IDAstar.js">         </script>
+  <script type="text/javascript" src="Algorithms/heuristics.js">      </script>
+  <br>
+  <br>
+
+  <footer>
+    <span>PROJECT HOSTED ON</span>
+    <a href="https://github.com/Dhriti-singh/path_finding">GitHub</a>
+  </footer>
+
+<br>
+</body>
+</html>

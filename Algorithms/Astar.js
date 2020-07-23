@@ -1,36 +1,7 @@
-// each probelm needs to have
-// - initial state
-// -actions
-// -transition state
-// -goal state
-// -path cost function
-
-// node
-// -a state
-// -a parent
-// -an actions
-// -path cost
-
-// -frontier
-
-// -expanded nodes
-
-// -Start with the frontier, which only contains the initial node 
-// -Start with an empty explored set
-// -Repeat 
-// --If the frontier is empty then there is no solution 
-// --Remove a node from the frontier 
-// --If node contains the goal state then return the solution 
-// --Add the node to the explored set
-// --Expand the node, add the resulting node to the frontier 
-//  - --if they aren't already in the frontier or in the explored state
-
-//the frontier stores the nodes to be expanded;
-
 function call_Astar(){
 	updateCanvas();
-	// board = [[]]
-	//which is walk able and which is not
+	
+	//to store all the information of each node
 	let nodes = [[]];
 
 	function Node(i,j){
@@ -48,17 +19,17 @@ function call_Astar(){
 		this. walk = board[i][j];
 	}
 
+	// the inital and goal state
 	let start = new Node(initialState.i, initialState.j);
 	let end = new Node(goalState.i , goalState.j);
 
-	let exploredNodes = [[]];
+	//to keep track of all the visited nodes
+	let visitedNodes = [];
 
 	for(let i=0 ; i<rows; i++){
 		nodes[i] = [];
-		exploredNodes[i] = [];
 		for(let j=0; j<cols ; j++){
 			nodes[i][j] = new Node(i,j);
-			exploredNodes[i][j] = 0;
 		}
 	}
 
@@ -67,8 +38,8 @@ function call_Astar(){
             return node.f;
         });
     }
-	// need to add all the heuristics
-
+	
+    //function to cheack if all current node is the goal state
 	function check(currNode){
 		if(currNode.i == goalState.i && currNode.j== goalState.j){
 			return true;
@@ -78,6 +49,7 @@ function call_Astar(){
 		}
 	}
 
+	//variable to check if the algorithm is finished
 	let AstarFinish = false;
 
 	function Astar(){
@@ -91,27 +63,31 @@ function call_Astar(){
 		while(frontier.size()>0){
 			//poping the lowest f(x) value node;
 			let currNode = frontier.pop();
-			console.log(currNode);
+
+			//console.log(currNode);
 			if(check(currNode)){
 				AstarFinish = true;
 				return;
 			}
 
 			currNode.closed = true;
-			exploredNodes[currNode.i][currNode.j] = 1;
+			
+			//expanding the current node
 			let neighbours = Neighbours(currNode, nodes);
-			console.log(neighbours);
+			//console.log(neighbours);
 
 			for(let i=0;i<neighbours.length;i++){
 				let neighbour = neighbours[i];
-				visitedNodes.push(neighbour);
-				if(neighbour.walk==1 || neighbour.closed==true || exploredNodes[neighbour.i][neighbour.j]==1){
+				if( neighbour.closed==true){
 					continue;
 				}
-
+				visitedNodes.push(neighbour);
 				let Gtemp = currNode.g + neighbour.cost;
 				let beenVisited = neighbour.visited;
 
+				//if the node has not yet been added to frontier yet  or
+				//the current g value is less than the previous one
+				//indicting a better path
 				if(beenVisited==false || Gtemp < neighbour.g){
 					neighbour.g = Gtemp;
 					neighbour.h = neighbour.h ||  heuristic(neighbour,end);
@@ -131,15 +107,16 @@ function call_Astar(){
 		}
 	}
 
-	let visitedNodes = [];
 	Astar();
 	let shortestPath = [];
 	if(AstarFinish==false){
 		console.log("no solution is avaiable");
 	}
 	else{
+		console.log("node found");
 		let currX = goalState.i;
 		let currY = goalState.j;
+		//backtracking the path to find the optimla path
 		while(1){
 			if(currX==initialState.i && currY==initialState.j){
 				break;

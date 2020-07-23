@@ -1,30 +1,34 @@
 function onStart(){
-
 	//radio button reading
 	if(document.getElementById("dfs").checked){
-		console.log("DFS ");
+		console.log(" starting DFS ");
 		call_DFS();
 	}
 	if(document.getElementById("bfs").checked){
-		console.log("BFS ");
+		console.log("starting BFS ");
 		call_BFS();
 	}
 	if(document.getElementById("Astar").checked){
-		console.log("a star");
+		console.log("starting a star");
 		call_Astar();
 	}
 	if(document.getElementById("dijkstra").checked){
-		console.log("dijkstra");
+		console.log("starting dijkstra");
 		call_dijkstra();
 	}
 	if(document.getElementById("IDDFS").checked){
-		console.log("IDDFS");
+		console.log("starting IDDFS");
 		call_IDDFS();
 	}
 	if(document.getElementById("IDAstar").checked){
-		console.log("IDAstar");
+		console.log("starting IDAstar");
 		call_IDAstar();
 	}
+	if(document.getElementById("bestfs").checked){
+		console.log("starting best first finder");
+		call_BestFirstSearch();
+	}
+	console.log("finished");
 }
 
 
@@ -65,6 +69,8 @@ function randomWallSparse(){
 			count = count + 1;
 		}
 	}
+	board[goalState.i][goalState.j] = 0;
+	board[initialState.i][initialState.j] = 0;
 	updateCanvas();
 }
 
@@ -84,14 +90,23 @@ function randomWallDense(){
 			count = count + 1;
 		}
 	}
+	board[goalState.i][goalState.j] = 0;
+	board[initialState.i][initialState.j] = 0;
 	updateCanvas();
 }
 
 function randomWeightSparse(){
-	let w = 100 ;
+	let w = 90 ;
 	a = [];
-	for(let i = 0 ; i < w ; i ++){
+	console.log("here");
+	for(let i = 0 ; i < 30 ; i ++){
 		a.push(10);
+	}
+	for(let i=0;i<30;i++){
+		a.push(20);
+	}
+	for(let i=0;i<30;i++){
+		a.push(50);
 	}
 	for(let i=w;i<=rows*cols;i++)
 		a.push(0);
@@ -103,13 +118,22 @@ function randomWeightSparse(){
 			count = count + 1;
 		}
 	}
+	weight[goalState.i][goalState.j] = 0;
+	weight[initialState.i][initialState.j] = 0;
 	updateCanvas();
 }
+
 function randomWeightDense(){
-	let w = 250 ;
+	let w = 240 ;
 	a = [];
-	for(let i = 0 ; i < w ; i ++){
+	for(let i = 0 ; i < 60 ; i ++){
 		a.push(10);
+	}
+	for(let i = 0 ; i < 60 ; i ++){
+		a.push(20);
+	}
+	for(let i = 0 ; i < 60 ; i ++){
+		a.push(50);
 	}
 	for(let i=w;i<=rows*cols;i++)
 		a.push(0);
@@ -121,6 +145,8 @@ function randomWeightDense(){
 			count = count + 1;
 		}
 	}
+	weight[goalState.i][goalState.j] = 0;
+	weight[initialState.i][initialState.j] = 0;
 	updateCanvas();
 }
 
@@ -199,7 +225,7 @@ function recursiveWall(){
 					else if(i == randomPassage){
 						continue;
 					}
-					console.log(bisection);
+					
 					board[i][bisection] = 1;
 				}
 				RecWall([x1,y1], [x2, bisection]);

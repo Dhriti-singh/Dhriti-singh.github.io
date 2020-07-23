@@ -11,8 +11,7 @@ let goalState = new Node(rows-1, cols-1);
 
 let isDrawingInitialState = 0;
 let isDrawingGoalState    = 0;
-// let isDrawingWall         = 0;
-// let isDrawingWeight       = 0;
+
 
 // triggers a function for each mouse click on the canvas
 canvas.addEventListener("mousedown", function(e){ 
@@ -20,12 +19,10 @@ canvas.addEventListener("mousedown", function(e){
    let x = event.clientX - rect.left; 
    let y = event.clientY - rect.top; 
 
-   // console.log(x);
-   // console.log(y);
 
    const [ cellRow, cellCol ]  = getCellAt(rows, cols, x, y, canvas)
-   console.log("click on row  " + cellRow);
-   console.log("click on cell col " + cellCol);
+   // console.log("click on row  " + cellRow);
+   // console.log("click on cell col " + cellCol);
 
    //check if the click was on initialState
    if(cellRow == initialState.i && cellCol == initialState.j){
@@ -37,7 +34,7 @@ canvas.addEventListener("mousedown", function(e){
       drawGoalState(event,canvas);
    }
    //check if the click was on goalState
-   if(document.getElementById("weight").checked){
+   if(document.getElementById("weight-10").checked || document.getElementById("weight-20").checked || document.getElementById("weight-50").checked){
       setWeight(canvas, e, cellRow, cellCol, board);
    }
    else{
@@ -59,7 +56,7 @@ for (let i = 0; i < rows; i++){
    } 
 }
 
-//intial grid 
+//updates the canvas
 function updateCanvas(){
    drawCells(rows,cols,board,canvas);
    singleCellDraw(initialState.i,initialState.j,"green");
@@ -69,9 +66,8 @@ function updateCanvas(){
 
 updateCanvas();
 
-//to draw the cell
+//to draw the cells
 function drawCells(rows,cols,board,canvas){
-   let ctx = canvas.getContext('2d');
    const width = canvas.getBoundingClientRect().width;
    const height = canvas.getBoundingClientRect().height;
    //ctx.clearRect(0,0,width,height)
@@ -83,11 +79,17 @@ function drawCells(rows,cols,board,canvas){
          if(board[i][j] == 1){
             singleCellDraw(i,j,"grey");
          }
+         else if(weight[i][j]== 10){
+            singleCellDraw(i,j,"#e6b3cc");
+         }
+         else if(weight[i][j]==20){
+            singleCellDraw(i,j,"#c6538a");
+         }
+         else if(weight[i][j]==50){
+            singleCellDraw(i,j,"#862d58");
+         }
          else{
             singleCellDraw(i,j,"white");
-         }
-         if(weight[i][j]== 10){
-            singleCellDraw(i,j,"pink");
          }
       }
    }
@@ -106,7 +108,6 @@ function drawGrid(rows,cols,canvas){
 
    let cellWidth = width/cols ;
    let cellHeight = height/rows;
-   let ctx = canvas.getContext('2d');
 
    //1. Set the line style options
    ctx.strokeStyle = "black";
@@ -132,6 +133,7 @@ function drawGrid(rows,cols,canvas){
    }
 }
 
+//get the coordinates of the grid with x and y coordinates
 function getCellAt(rows, cols, px, py, canvas) {
 
    let ctx = canvas.getContext('2d');
@@ -158,17 +160,30 @@ function getCellAt(rows, cols, px, py, canvas) {
 
 }
 
-function setWeight(canvas, event, cellRow, cellCol, board) { 
+//to set new weights on the grid
+function setWeight(canvas, event, cellRow, cellCol, board){ 
+
    if(weight[cellRow][cellCol] == 0){
-      weight[cellRow][cellCol] = 10;
-      console.log("board weight set " + weight[cellRow][cellCol]);
+      if(document.getElementById("weight-10").checked){
+         weight[cellRow][cellCol] = 10;
+         singleCellDraw(cellRow,cellCol,"#e6b3cc");
+      }
+      if(document.getElementById("weight-20").checked){
+         weight[cellRow][cellCol] = 20;
+         singleCellDraw(cellRow,cellCol,"#c6538a");
+      }
+      if(document.getElementById("weight-50").checked){
+         weight[cellRow][cellCol] = 50;
+         singleCellDraw(cellRow,cellCol,"#862d58");
+      }
    }
 
-   else if(weight[cellRow][cellCol] == 10){
+   else{
       weight[cellRow][cellCol] = 0 ;
-      console.log("board weight removed " + weight[cellRow][cellCol]);
+      singleCellDraw(cellRow,cellCol,"white");
    }
    board[cellRow][cellCol] = 0;
+   
 }
 
 //function to add walls in the board
@@ -177,69 +192,13 @@ function setWall(canvas, event, cellRow, cellCol) {
 
    if(board[cellRow][cellCol] == 0){
       board[cellRow][cellCol] = 1;
-      console.log("board 0 to " + board[cellRow][cellCol]);
       singleCellDraw(cellRow, cellCol, "grey");
    }
 
    else if(board[cellRow][cellCol] == 1){
 
       board[cellRow][cellCol] = 0 ;
-      console.log("board 1 to"+ board[cellRow][cellCol]);
       singleCellDraw(cellRow, cellCol, "white");
    }
    weight[cellRow][cellCol] = 0;
-
-   // let ctx = canvas.getContext('2d');
-   // canvas.addEventListener("mousemove", mouseMove, false);
-   // canvas.addEventListener("mouseup",   mouseUp,   false);
-   // let mouse_x = event.offsetX;
-   // let mouse_y = event.offsetY;
-
-   // function mouseMove(event){
-   //    console.log("mouse move");
-   //    if(isDrawingWall==1){
-   //       let[currCellRow , currCellCol] = getCellAt(rows,cols,mouse_x,mouse_y,canvas);
-   //       if(currCellCol==initialState.j && currCellRow==initialState.i)
-   //          console.log("start can not be a wall");
-   //       else if(currCellCol==drawGoalState.j && currCellRow==drawGoalState.i)
-   //          console.log("end can not be a wall");
-   //       else{
-   //          if(board[currCellRow][currCellCol]==1){
-   //             board[currCellRow][currCellCol] = 0;
-   //             singleCellDraw(currCellRow,currCellCol,"white");
-   //          }
-   //          else{
-   //             board[currCellRow][currCellCol] = 1;
-   //             singleCellDraw(currCellRow.currCellCol,"grey")
-   //          }
-   //       }
-   //       weight[currCellRow][currCellCol] = 0;
-   //       mouse_x = event.offsetX;
-   //       mouse_y = event.offsetY;
-   //    }
-   // }
-   // function mouseUp(event){
-   //    if(isDrawingWall==1){
-   //       isDrawingWall = 0;
-   //       let[currCellRow , currCellCol] = getCellAt(rows,cols,mouse_x,mouse_y,canvas);
-   //       if(currCellCol==initialState.j && currCellRow==initialState.i)
-   //          console.log("start can not be a wall");
-   //       if(currCellCol==drawGoalState.j && currCellRow==drawGoalState.i)
-   //          console.log("end can not be a wall");
-   //       else{
-   //          if(board[currCellRow][currCellCol]==1){
-   //             board[currCellRow][currCellCol] = 0;
-   //             singleCellDraw(currCellRow,currCellCol,"grey");
-   //          }
-   //          else{
-   //             board[currCellRow][currCellCol] = 0;
-   //             singleCellDraw(currCellRow.currCellCol,"white")
-   //          }
-   //       }
-   //       weight[currCellRow][currCellCol] = 0;
-   //       mouse_x = event.offsetX;
-   //       mouse_y = event.offsetY;
-
-   //    }
-   // }
 }
