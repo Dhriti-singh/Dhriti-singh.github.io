@@ -60,6 +60,8 @@ function call_BestFirstSearch(){
 		let frontier = heap();
 		frontier.push(start);
 
+		nodes[start.i][start.j] = 1;
+
 		start.h = heuristic(start,end);
 
 		while(frontier.size()>0){
@@ -70,7 +72,7 @@ function call_BestFirstSearch(){
 			
 			//if the current node is the goal state
 			if(check(front)){
-				BestFirstSearch = true;
+				BestFirstSearchFinish = true;
 				return;
 			}
 
@@ -113,12 +115,13 @@ function call_BestFirstSearch(){
 	BestFirstSearch();
 
 	//if the node is unreachable
-	if(BestFirstSearch==false){
+	if(BestFirstSearchFinish == false){
 		document.getElementById("status_select").innerHTML = "Unreachable";
 		console.log("no solution is avaiable");
 		document.getElementById("visit_select").innerHTML = "-";
 		document.getElementById("path_select").innerHTML = "-";
 	}
+
 	else{
 		let currX = goalState.i;
 		let currY = goalState.j;
@@ -143,9 +146,9 @@ function call_BestFirstSearch(){
 		document.getElementById("visit_select").innerHTML = visitedNodes.length;
 		document.getElementById("path_select").innerHTML = shortestPath.length;
 		//visualizing the optimal path
-		drawArrayBlue(visitedNodes);
-		drawArrayYellow(shortestPath);
-		singleCellDraw(initialState.i, initialState.j,"green");
-		singleCellDraw(goalState.i,goalState.j,"red");
 	}
+	drawArrayBlue(visitedNodes);
+	drawArrayYellow(shortestPath);
+	singleCellDraw(initialState.i, initialState.j,"green");
+	singleCellDraw(goalState.i,goalState.j,"red");
 }
