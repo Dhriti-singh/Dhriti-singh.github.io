@@ -1,6 +1,5 @@
 function call_BestFirstSearch(){
 	updateCanvas();
-	
 	//to store all the nodes
 	let nodes = [[]];
 
@@ -115,12 +114,15 @@ function call_BestFirstSearch(){
 
 	//if the node is unreachable
 	if(BestFirstSearch==false){
+		document.getElementById("status_select").innerHTML = "Unreachable";
 		console.log("no solution is avaiable");
+		document.getElementById("visit_select").innerHTML = "-";
+		document.getElementById("path_select").innerHTML = "-";
 	}
 	else{
 		let currX = goalState.i;
 		let currY = goalState.j;
-
+		document.getElementById("status_select").innerHTML = "Found";
 		//backtracking the path from the goal state
 
 		while(1){
@@ -137,11 +139,13 @@ function call_BestFirstSearch(){
 				shortestPath.push(curr);
 			}
 		}
-	}
 	
-	//visualizing the optimal path
-	drawArrayBlue(visitedNodes);
-	drawArrayYellow(shortestPath);
-	singleCellDraw(initialState.i, initialState.j,"green");
-	singleCellDraw(goalState.i,goalState.j,"red");
+		document.getElementById("visit_select").innerHTML = visitedNodes.length;
+		document.getElementById("path_select").innerHTML = shortestPath.length;
+		//visualizing the optimal path
+		drawArrayBlue(visitedNodes);
+		drawArrayYellow(shortestPath);
+		singleCellDraw(initialState.i, initialState.j,"green");
+		singleCellDraw(goalState.i,goalState.j,"red");
+	}
 }
